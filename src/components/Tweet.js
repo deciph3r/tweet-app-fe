@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { Card, Col, Row, Container, Button, InputGroup, Form } from 'react-bootstrap'
-import { loadTweet, updateTweet, replyTweet } from '../service.ts';
+import { loadTweet, updateTweet, replyTweet, deleteTweet, likeTweet } from '../service.ts';
 import logo from '../logo.svg'
+import ConfirmationModal from './ConfirmationModal';
 function Tweet({ data, currentUser }) {
 
     const [reply, setReply] = useState('');
@@ -10,6 +11,7 @@ function Tweet({ data, currentUser }) {
     const tweetInputRef = useRef(null);
     const [showReplyInput, setShowReplyInput] = useState(false);
     const [showUpdateInput, setShowUpdateInput] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
 
     function onSubmitHandler(e) {
@@ -58,7 +60,7 @@ function Tweet({ data, currentUser }) {
             <Card className='my-2' body>
                 <Container>
                     <Row className='justify-content-center'>
-                        <Col xs="auto"><img alt='profile picture' src={logo} width="60"
+                        <Col xs="auto"><img alt='profile' src={logo} width="60"
                             height="60" /></Col>
                         <Col xs="auto">
                             <Row>
@@ -78,9 +80,9 @@ function Tweet({ data, currentUser }) {
                         </Col>
                     </Row>
                     <div>
-                        <Button className='mx-2'> Like </Button>
+                        <Button className='mx-2' onClick={() => { likeTweet(data['id']) }}> Like </Button>
                         <Button className='mx-2' onClick={() => { setShowUpdateInput(false); setShowReplyInput(() => !showReplyInput) }}> Reply </Button>
-                        {data["username"] === currentUser && <Button className='mx-2'  > Delete </Button>}
+                        {data["username"] === currentUser && <Button className='mx-2' onClick={() => setShowModal(true)} > Delete </Button>}
                         {data["username"] === currentUser && <Button className='mx-2' onClick={() => { setShowReplyInput(false); setShowUpdateInput(() => !showUpdateInput) }}> Edit </Button>}
                     </div>
                     {(showReplyInput || showUpdateInput) && <div>
@@ -96,6 +98,7 @@ function Tweet({ data, currentUser }) {
                     </div>}
                 </Container>
             </Card>
+            <ConfirmationModal show={showModal} message={"Want to delete the following tweet"} tweet={data['tweet']} setShow={setShowModal} onConfirm={() => { deleteTweet(data['id']); setShowModal(false); }} />
         </>
     )
 }

@@ -8,9 +8,7 @@ export async function login(username: String, password: String) {
         },
         body: JSON.stringify({ username, password })
     })
-    if (response.status === 403) throw new Error("unauthorized");
-    const key = await response.json();
-    return key;
+    return response;
 }
 
 export async function loadTweets() {
@@ -81,7 +79,7 @@ export async function getAllUsers() {
 }
 
 export async function searchUser(key: String) {
-    const response = await fetch(BASE_URL + `/user/search${key}`, {
+    const response = await fetch(BASE_URL + `/user/search/${key}`, {
         method: 'GET',
         headers: {
             "content-type": "application/json",
@@ -153,10 +151,22 @@ export async function likeTweet(id: String) {
 export async function deleteTweet(id: String) {
     const username = localStorage.getItem("user");
     const response = await fetch(BASE_URL + `/${username}/delete/${id}`, {
-        method: 'DEL',
+        method: 'DELETE',
         headers: {
             "content-type": "application/json",
             "Authorization": "Bearer " + localStorage.getItem("access-token")
         }
+    })
+}
+
+
+export async function logout() {
+    const response = await fetch(BASE_URL + `/sign-out`, {
+        method: 'POST',
+        headers: {
+            "content-type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("access-token")
+        },
+        body: JSON.stringify({ refreshToken: localStorage.getItem("refresh-token") })
     })
 }

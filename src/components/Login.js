@@ -3,7 +3,7 @@ import { Form, Button } from 'react-bootstrap'
 import { login } from "../service.ts";
 import { useNavigate } from "react-router-dom"
 
-function Login() {
+function Login({ setIsLoggedIn }) {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const history = useNavigate();
@@ -11,29 +11,28 @@ function Login() {
 
   async function onSubmitHandler(e) {
     e.preventDefault();
-    try {
-      const key = await login(userName, password);
+    const response = await login(userName, password);
 
-      localStorage.setItem("access-token", key["access-token"]);
-      localStorage.setItem("refresh-token", key["refresh-token"]);
-
-      var base64Url = key["access-token"].split('.')[1];
-      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-
-      const json = await JSON.parse(jsonPayload);
-
-      localStorage.setItem("user", json["sub"]);
-      history("/tweets");
-    } catch (err) {
-      if (err === "unauthorized") {
-        setShowAuthError(true);
-      }
+    if (response.status === 401) {
+      setShowAuthError(true);
+      return;
     }
 
+    const key = await response.json();
+    localStorage.setItem("access-token", key["access-token"]);
+    localStorage.setItem("refresh-token", key["refresh-token"]);
 
+    var base64Url = key["access-token"].split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    const json = await JSON.parse(jsonPayload);
+
+    localStorage.setItem("user", json["sub"]);
+    setIsLoggedIn(true);
+    history("/tweets");
   }
   return (
     <Form onSubmit={onSubmitHandler}>
