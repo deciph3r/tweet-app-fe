@@ -170,3 +170,26 @@ export async function logout() {
         body: JSON.stringify({ refreshToken: localStorage.getItem("refresh-token") })
     })
 }
+
+export async function isLikedByUser(id: String) {
+    const response = await fetch(BASE_URL + `/tweet/likedBy/${id}`, {
+        method: 'GET',
+        headers: {
+            "content-type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("access-token")
+        }
+    })
+
+    return await response.json();
+}
+
+export async function unLikeTweet(id: String) {
+    const username = localStorage.getItem("user");
+    const response = await fetch(BASE_URL + `/${username}/unlike/${id}`, {
+        method: 'PUT',
+        headers: {
+            "content-type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("access-token")
+        }
+    })
+}

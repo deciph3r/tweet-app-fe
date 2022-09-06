@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { Card, Col, Row, Container, Button, InputGroup, Form } from 'react-bootstrap'
-import { loadTweet, updateTweet, replyTweet, deleteTweet, likeTweet } from '../service.ts';
+import { loadTweet, updateTweet, replyTweet, deleteTweet, likeTweet, isLikedByUser, unLikeTweet } from '../service.ts';
 import logo from '../logo.svg'
 import ConfirmationModal from './ConfirmationModal';
 function Tweet({ data, currentUser }) {
@@ -12,6 +12,7 @@ function Tweet({ data, currentUser }) {
     const [showReplyInput, setShowReplyInput] = useState(false);
     const [showUpdateInput, setShowUpdateInput] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [isLiked, setIsLiked] = useState(false);
 
 
     function onSubmitHandler(e) {
@@ -27,6 +28,18 @@ function Tweet({ data, currentUser }) {
         }
     }
 
+    async function likeHandler() {
+        if (isLiked) {
+            unLikeTweet(data['id']);
+            setIsLiked(false)
+        } else {
+            likeTweet(data['id']);
+            setIsLiked(true)
+        }
+    }
+
+
+
     useEffect(() => {
         setTweet(() => showUpdateInput ? data['tweet'] : '')
     }, [showReplyInput, showUpdateInput])
@@ -37,7 +50,10 @@ function Tweet({ data, currentUser }) {
                 const replyToTweet = await loadTweet(data.repliedTo);
                 setReply(() => replyToTweet["tweet"]);
             }
-            const currentTime = new Date()
+            const bool = await isLikedByUser(data['id']);
+            setIsLiked(bool);
+            console.log(data['id'], isLiked);
+            const currentTime = new Date();
             const createdTime = new Date(data.postTime * 1000);
             const difference = currentTime - createdTime;
             if (difference / 1000 < 60) {
@@ -80,7 +96,7 @@ function Tweet({ data, currentUser }) {
                         </Col>
                     </Row>
                     <div>
-                        <Button className='mx-2' onClick={() => { likeTweet(data['id']) }}> Like </Button>
+                        <Button className='mx-2' onClick={likeHandler}>{(isLiked) ? "\u2665" : "\u2661"} {data['likes']}</Button>
                         <Button className='mx-2' onClick={() => { setShowUpdateInput(false); setShowReplyInput(() => !showReplyInput) }}> Reply </Button>
                         {data["username"] === currentUser && <Button className='mx-2' onClick={() => setShowModal(true)} > Delete </Button>}
                         {data["username"] === currentUser && <Button className='mx-2' onClick={() => { setShowReplyInput(false); setShowUpdateInput(() => !showUpdateInput) }}> Edit </Button>}
