@@ -118,7 +118,7 @@ export async function register(user: { firstName: String, lastName: String, user
         },
         body: JSON.stringify(user)
     })
-    return await response.json();
+    return await response;
 }
 
 
@@ -191,5 +191,17 @@ export async function unLikeTweet(id: String) {
             "content-type": "application/json",
             "Authorization": "Bearer " + localStorage.getItem("access-token")
         }
+    })
+}
+
+export async function changePassword(newPassword) {
+    const username = localStorage.getItem("user");
+    const response = await fetch(BASE_URL + `/${username}/forgot`, {
+        method: 'POST',
+        headers: {
+            "content-type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("access-token")
+        },
+        body: JSON.stringify({ newPassword })
     })
 }

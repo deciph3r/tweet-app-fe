@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import { isUsernameExist, register } from '../service.ts';
+import { useNavigate } from "react-router-dom"
 
 function Register() {
 
@@ -10,21 +11,23 @@ function Register() {
     const [loginId, setLoginId] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [resetKey, setResetKey] = useState('');
+
+    const history = useNavigate();
 
     const confirmPasswordRef = useRef(null);
     const userNameRef = useRef(null);
     async function onSubmitHandler(e) {
         e.preventDefault();
-        if (!confirmPasswordRef.current.classList.contains('is-invalid') && !confirmPasswordRef.current.classList.contains('is-invalid')) {
-            register({
+        if (!confirmPasswordRef.current.classList.contains('is-invalid') && !userNameRef.current.classList.contains('is-invalid')) {
+            const response = await register({
                 firstName,
                 lastName,
                 email,
                 username: loginId,
-                password,
-                resetKey
+                password
             })
+
+            history("/");
         }
     }
 
@@ -77,11 +80,6 @@ function Register() {
             <Form.Group className="mb-3">
                 <Form.Label>Confirm Password</Form.Label>
                 <Form.Control value={confirmPassword} ref={confirmPasswordRef} onChange={(e) => setConfirmPassword(e.target.value)} type="password" placeholder="Confirm your password" required />
-            </Form.Group>
-
-            <Form.Group className="mb-3" >
-                <Form.Label>Reset Phrase</Form.Label>
-                <Form.Control value={resetKey} onChange={(e) => setResetKey(e.target.value)} type="text" placeholder="Choose your reset phrase" pattern='.{6,12}' required />
             </Form.Group>
 
             <Button variant="primary" type="submit">

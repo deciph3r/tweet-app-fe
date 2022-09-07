@@ -6,6 +6,7 @@ import Login from './components/Login';
 import TweetPage from './components/TweetPage';
 import { useEffect, useState } from 'react';
 import AllUsers from './components/AllUsers';
+import ChangePassword from './components/ChangePassword';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -38,6 +39,7 @@ function App() {
           <Route path='/register' element={<Register />} />
           <Route path='/tweets' element={<TweetPage />} />
           <Route path='/all-users' element={<AllUsers />} />
+          <Route path='/forgot' element={<ChangePassword setIsLoggedIn={setIsLoggedIn} />} />
         </Routes>
       </div>
     </div>
