@@ -23,8 +23,8 @@ function Tweet({ data, currentUser }) {
             tweetInputRef.current.classList.remove('is-invalid')
             let listOfTag = tweet.match(/#[\w]{1,50}/g);
             listOfTag = (listOfTag === null) ? null : listOfTag.map((e) => e.replace('#', ''))
-            console.log(data.id, tweet, listOfTag)
             showUpdateInput ? updateTweet(data.id, tweet, listOfTag) : replyTweet(data.id, tweet, listOfTag);
+            setTweet('');
         }
     }
 
@@ -47,12 +47,17 @@ function Tweet({ data, currentUser }) {
     useEffect(() => {
         (async () => {
             if (data.repliedTo !== null) {
-                const replyToTweet = await loadTweet(data.repliedTo);
-                setReply(() => replyToTweet["tweet"]);
+                const response = await loadTweet(data.repliedTo);
+                if (response.status === 400) {
+                    setReply('previous tweet is deleted')
+                } else {
+                    const replyToTweet = await response.json();
+                    setReply(() => replyToTweet["tweet"]);
+                }
+
             }
             const bool = await isLikedByUser(data['id']);
             setIsLiked(bool);
-            console.log(data['id'], isLiked);
             const currentTime = new Date();
             const createdTime = new Date(data.postTime * 1000);
             const difference = currentTime - createdTime;
