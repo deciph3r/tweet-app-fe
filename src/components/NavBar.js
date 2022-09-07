@@ -50,6 +50,9 @@ function Navbar({ setIsLoggedIn, isLoggedIn }) {
                             <Link className='nav-link' to="/all-users">
                                 All Users
                             </Link>
+                            <Link className='nav-link' to="/forgot">
+                                Change Password
+                            </Link>
                             <a className='nav-link' style={{ cursor: 'pointer' }} onClick={() => setShowModal(true)} >
                                 Logout
                             </a></>}
