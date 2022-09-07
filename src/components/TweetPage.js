@@ -23,6 +23,7 @@ function TweetPage() {
             listOfTag = (listOfTag === null) ? null : listOfTag.map((e) => e.replace('#', ''))
 
             createTweet(tweet, listOfTag);
+            setTweet('');
         }
     }
     useEffect(() => {

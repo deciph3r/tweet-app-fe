@@ -23,17 +23,6 @@ export async function loadTweets() {
     return await response.json();
 }
 
-export async function loadTweet(id: String) {
-    const response = await fetch(BASE_URL + `/tweet/${id}`, {
-        method: 'GET',
-        headers: {
-            "content-type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("access-token")
-        },
-    })
-
-    return await response.json();
-}
 
 export async function createTweet(tweet: String, tweetTag: [String]) {
     const username = localStorage.getItem("user");
@@ -171,17 +160,6 @@ export async function logout() {
     })
 }
 
-export async function isLikedByUser(id: String) {
-    const response = await fetch(BASE_URL + `/tweet/likedBy/${id}`, {
-        method: 'GET',
-        headers: {
-            "content-type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("access-token")
-        }
-    })
-
-    return await response.json();
-}
 
 export async function unLikeTweet(id: String) {
     const username = localStorage.getItem("user");

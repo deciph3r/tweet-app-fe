@@ -1,11 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { Card, Col, Row, Container, Button, InputGroup, Form } from 'react-bootstrap'
-import { loadTweet, updateTweet, replyTweet, deleteTweet, likeTweet, isLikedByUser, unLikeTweet } from '../service.ts';
+import { updateTweet, replyTweet, deleteTweet, likeTweet, isLikedByUser, unLikeTweet } from '../service.ts';
 import logo from '../logo.svg'
 import ConfirmationModal from './ConfirmationModal';
 function Tweet({ data, currentUser }) {
 
-    const [reply, setReply] = useState('');
     const [time, setTime] = useState('');
     const [tweet, setTweet] = useState('');
     const tweetInputRef = useRef(null);
@@ -45,36 +44,24 @@ function Tweet({ data, currentUser }) {
     }, [showReplyInput, showUpdateInput])
 
     useEffect(() => {
-        (async () => {
-            if (data.repliedTo !== null) {
-                const response = await loadTweet(data.repliedTo);
-                if (response.status === 400) {
-                    setReply('previous tweet is deleted')
-                } else {
-                    const replyToTweet = await response.json();
-                    setReply(() => replyToTweet["tweet"]);
-                }
+        setIsLiked(() => data['likedByUser']);
+        const currentTime = new Date();
+        const createdTime = new Date(data.postTime * 1000);
+        const difference = currentTime - createdTime;
+        if (difference / 1000 < 60) {
+            setTime(Math.floor(difference / 1000) + "s")
+        } else if ((difference / (1000 * 60)) < 60) {
+            setTime(Math.floor(difference / (1000 * 60)) + "m");
+        } else if ((difference / (1000 * 60 * 60)) < 24) {
+            setTime(Math.floor(difference / (1000 * 60 * 60)) + "h");
+        } else if ((difference / (1000 * 60 * 60 * 24)) < 30) {
+            setTime(Math.floor(difference / (1000 * 60 * 60 * 24)) + " days");
+        } else if ((difference / (1000 * 60 * 60 * 24 * 30)) < 30) {
+            setTime(Math.floor(difference / (1000 * 60 * 60 * 24 * 30)) + " months");
+        } else {
+            setTime(Math.floor(difference / (1000 * 60 * 60 * 24 * 365)) + " years");
+        }
 
-            }
-            const bool = await isLikedByUser(data['id']);
-            setIsLiked(bool);
-            const currentTime = new Date();
-            const createdTime = new Date(data.postTime * 1000);
-            const difference = currentTime - createdTime;
-            if (difference / 1000 < 60) {
-                setTime(Math.floor(difference / 1000) + "s")
-            } else if ((difference / (1000 * 60)) < 60) {
-                setTime(Math.floor(difference / (1000 * 60)) + "m");
-            } else if ((difference / (1000 * 60 * 60)) < 24) {
-                setTime(Math.floor(difference / (1000 * 60 * 60)) + "h");
-            } else if ((difference / (1000 * 60 * 60 * 24)) < 30) {
-                setTime(Math.floor(difference / (1000 * 60 * 60 * 24)) + " days");
-            } else if ((difference / (1000 * 60 * 60 * 24 * 30)) < 30) {
-                setTime(Math.floor(difference / (1000 * 60 * 60 * 24 * 30)) + " months");
-            } else {
-                setTime(Math.floor(difference / (1000 * 60 * 60 * 24 * 365)) + " years");
-            }
-        })()
     }, [])
     return (
         <>
@@ -90,8 +77,8 @@ function Tweet({ data, currentUser }) {
                             </Row>
                             <Row>
                                 <Col>
-                                    {data["repliedTo"] && <Row>
-                                        "{reply}"
+                                    {data["repliedToMessage"] && <Row>
+                                        "{data["repliedToMessage"]}"
                                     </Row>}
                                     <Row>
                                         {data.tweet}
