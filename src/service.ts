@@ -11,8 +11,9 @@ export async function login(username: String, password: String) {
     return response;
 }
 
-export async function loadTweets() {
-    const response = await fetch(BASE_URL + "/all", {
+export async function loadTweets(page: Number = 0) {
+    console.log(page);
+    const response = await fetch(BASE_URL + `/all?page=${page}`, {
         method: 'GET',
         headers: {
             "content-type": "application/json",
@@ -78,8 +79,8 @@ export async function searchUser(key: String) {
     return await response.json();
 }
 
-export async function getAllTweetsOfUser(id: String) {
-    const response = await fetch(BASE_URL + `/${id}`, {
+export async function getAllTweetsOfUser(id: String, page: Number = 0) {
+    const response = await fetch(BASE_URL + `/${id}?page=${page}`, {
         method: 'GET',
         headers: {
             "content-type": "application/json",
