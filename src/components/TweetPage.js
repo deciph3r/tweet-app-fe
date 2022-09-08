@@ -1,17 +1,30 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { InputGroup, Form, Button } from 'react-bootstrap'
 import { useSearchParams } from 'react-router-dom';
+import InfiniteScroll from "react-infinite-scroll-component";
 import { loadTweets, createTweet, getAllTweetsOfUser } from '../service.ts';
 import Tweet from './Tweet'
 function TweetPage() {
     const [tweet, setTweet] = useState('');
     const tweetInputRef = useRef(null);
-
+    const [hasMore, setHasMore] = useState(true);
     const [listOfTweets, setListOfTweets] = useState([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const id = searchParams.get('id');
-
+    const [pageNumber, setPageNumber] = useState(1);
     let [currentUser, setCurrentUser] = useState('');
+
+
+    function fetchMore() {
+        (async () => {
+            console.log('hello');
+            const json = (id === null) ? await loadTweets(pageNumber) : await getAllTweetsOfUser(id, pageNumber);
+            setListOfTweets([...listOfTweets, ...json]);
+            setPageNumber(() => pageNumber + 1)
+            console.log(json);
+            if (json.length === 0) setHasMore(false);
+        })()
+    }
 
     function onSubmitHandler(e) {
         e.preventDefault();
@@ -31,6 +44,7 @@ function TweetPage() {
             try {
                 const json = (id === null) ? await loadTweets() : await getAllTweetsOfUser(id);
                 setListOfTweets(json);
+                if (json.length === 0) setHasMore(false);
             } catch (e) {
                 console.error(e);
             }
@@ -50,7 +64,18 @@ function TweetPage() {
             </Form>}
 
             <>
-                {listOfTweets.map(e => <Tweet key={e.id} data={e} currentUser={currentUser} />)}
+                <InfiniteScroll
+                    dataLength={listOfTweets.length}
+                    next={fetchMore}
+                    hasMore={hasMore}
+                    loader={
+                        <div class="spinner-border text-primary my-2" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    }
+                >
+                    {listOfTweets.map((e) => <Tweet key={e.id} data={e} currentUser={currentUser} />)}
+                </InfiniteScroll>
             </>
         </>
     )
