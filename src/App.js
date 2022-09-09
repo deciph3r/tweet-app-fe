@@ -7,22 +7,11 @@ import TweetPage from './components/TweetPage';
 import { useEffect, useState } from 'react';
 import AllUsers from './components/AllUsers';
 import ChangePassword from './components/ChangePassword';
+import { getAccessToken } from './service.ts'
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  async function getAccessToken() {
-    if (localStorage.getItem('user')) {
-      const accessToken = await fetch("http://127.0.0.1:8080/api/v1.0/tweets/createAccessToken", {
-        method: "POST",
-        headers: {
-          Accept: 'application/json',
-          "content-type": "application/json"
-        },
-        body: JSON.stringify({ "refreshToken": localStorage.getItem("refresh-token") })
-      })
-      localStorage.setItem("access-token", await accessToken.text());
-    }
-  }
+
 
   useEffect(() => {
     getAccessToken();

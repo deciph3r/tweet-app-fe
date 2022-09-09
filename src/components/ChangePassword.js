@@ -6,19 +6,21 @@ import { useNavigate } from 'react-router-dom'
 function ChangePassword({ setIsLoggedIn }) {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [isFormDirty, setIsFormDirty] = useState(false);
 
     const confirmPasswordRef = useRef(null);
     const history = useNavigate();
 
     useEffect(() => {
-        if (confirmPassword !== password) {
+        if (confirmPassword !== password && isFormDirty) {
             confirmPasswordRef.current.classList.remove('is-valid');
             confirmPasswordRef.current.classList.add('is-invalid');
-        } else {
+        } else if (confirmPassword === password && isFormDirty) {
+            console.log("t");
             confirmPasswordRef.current.classList.remove('is-invalid');
             confirmPasswordRef.current.classList.add('is-valid');
         }
-    }, [confirmPassword])
+    }, [confirmPassword, password, isFormDirty])
 
     async function onSubmitHandler(e) {
         e.preventDefault();
@@ -42,7 +44,7 @@ function ChangePassword({ setIsLoggedIn }) {
                 </Form.Group>
                 <Form.Group className="mb-3">
                     <Form.Label>Confirm Password</Form.Label>
-                    <Form.Control value={confirmPassword} ref={confirmPasswordRef} onChange={(e) => setConfirmPassword(e.target.value)} type="password" placeholder="Confirm your password" required />
+                    <Form.Control onBlur={() => setIsFormDirty(true)} value={confirmPassword} ref={confirmPasswordRef} onChange={(e) => setConfirmPassword(e.target.value)} type="password" placeholder="Confirm your password" required />
                 </Form.Group>
                 <Button variant="primary" type="submit">
                     Submit

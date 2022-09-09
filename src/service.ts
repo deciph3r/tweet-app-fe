@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:8080/api/v1.0/tweets"
+const BASE_URL = "http://tweet-app-be-lb-890438739.ap-south-1.elb.amazonaws.com/api/v1.0/tweets"
 
 export async function login(username: String, password: String) {
     const response = await fetch(BASE_URL + "/login", {
@@ -183,4 +183,18 @@ export async function changePassword(newPassword) {
         },
         body: JSON.stringify({ newPassword })
     })
+}
+
+export async function getAccessToken() {
+    if (localStorage.getItem('user')) {
+        const accessToken = await fetch(BASE_URL + "/createAccessToken", {
+            method: "POST",
+            headers: {
+                Accept: 'application/json',
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({ "refreshToken": localStorage.getItem("refresh-token") })
+        })
+        localStorage.setItem("access-token", await accessToken.text());
+    }
 }

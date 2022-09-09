@@ -12,6 +12,7 @@ function Register() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
+    const [isFormDirty, setIsFormDirty] = useState(false);
     const history = useNavigate();
 
     const confirmPasswordRef = useRef(null);
@@ -32,14 +33,14 @@ function Register() {
     }
 
     useEffect(() => {
-        if (confirmPassword !== password) {
+        if (confirmPassword !== password && isFormDirty) {
             confirmPasswordRef.current.classList.remove('is-valid');
             confirmPasswordRef.current.classList.add('is-invalid');
-        } else {
+        } else if (confirmPassword === password && isFormDirty) {
             confirmPasswordRef.current.classList.remove('is-invalid');
             confirmPasswordRef.current.classList.add('is-valid');
         }
-    }, [confirmPassword])
+    }, [confirmPassword, password, isFormDirty])
 
     useEffect(() => {
         const t = setTimeout((async () => {
@@ -58,7 +59,7 @@ function Register() {
     return (
         <Form onSubmit={onSubmitHandler}>
             <Form.Group className="mb-3">
-                <Form.Label>First Name</Form.Label>
+                <Form.Label>First Name *</Form.Label>
                 <Form.Control value={firstName} onChange={(e) => setFirstName(e.target.value)} type="text" placeholder="Enter your first name" pattern='[aA-zZ]{1,12}' required />
             </Form.Group>
             <Form.Group className="mb-3" >
@@ -66,20 +67,26 @@ function Register() {
                 <Form.Control value={lastName} onChange={(e) => setLastName(e.target.value)} type="text" placeholder="Enter your last name" />
             </Form.Group>
             <Form.Group className="mb-3" >
-                <Form.Label>Email address</Form.Label>
+                <Form.Label>Email address*</Form.Label>
                 <Form.Control value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Enter your e-mail" required />
             </Form.Group>
             <Form.Group className="mb-3" >
-                <Form.Label>Login Id</Form.Label>
+                <Form.Label>Login Id*</Form.Label>
                 <Form.Control ref={userNameRef} value={loginId} onChange={(e) => setLoginId(e.target.value)} type="text" placeholder="Choose your login id" pattern='([aA-zZ_.]){5,12}' required />
+                <Form.Text muted>
+                    Your Login Id must be unique and 5-12 characters long and can contain only these special characters '_' and '.'
+                </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3" >
-                <Form.Label>Password</Form.Label>
+                <Form.Label>Password*</Form.Label>
                 <Form.Control value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Choose your password" pattern='.{6,12}' required />
+                <Form.Text muted>
+                    Your password must be 6-12 characters long
+                </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>Confirm Password</Form.Label>
-                <Form.Control value={confirmPassword} ref={confirmPasswordRef} onChange={(e) => setConfirmPassword(e.target.value)} type="password" placeholder="Confirm your password" required />
+                <Form.Label>Confirm Password*</Form.Label>
+                <Form.Control value={confirmPassword} onBlur={() => setIsFormDirty(true)} ref={confirmPasswordRef} onChange={(e) => setConfirmPassword(e.target.value)} type="password" placeholder="Confirm your password" required />
             </Form.Group>
 
             <Button variant="primary" type="submit">

@@ -71,18 +71,16 @@ function Tweet({ data, currentUser }) {
                         <Col xs="auto"><img alt='profile' src={logo} width="60"
                             height="60" /></Col>
                         <Col xs="auto">
-                            <Row>
+                            <Row className='my-1'>
                                 <Col>@{data.username}</Col>
                                 <Col>{time} ago</Col>
                             </Row>
-                            <Row>
+                            <Row className='my-1'>
                                 <Col>
-                                    {data["repliedToMessage"] && <Row>
-                                        "{data["repliedToMessage"]}"
-                                    </Row>}
-                                    <Row>
-                                        {data.tweet}
-                                    </Row>
+                                    {data["repliedToMessage"] &&
+                                        <div>"{data["repliedToMessage"]}"</div>
+                                    }
+                                    <div>{data.tweet}</div>
                                 </Col>
                             </Row>
                         </Col>
