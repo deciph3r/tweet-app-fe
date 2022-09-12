@@ -24,6 +24,7 @@ function User({ data }) {
 function AllUsers() {
 
     const [users, setUsers] = useState([]);
+    const [searchKey, setSearchKey] = useState('');
 
     useEffect(() => {
         (async () => {
@@ -32,14 +33,13 @@ function AllUsers() {
         })()
     }, [])
 
-    function searchHandler(e) {
+    useEffect(() => {
         const t = setTimeout((async () => {
-            const searchKey = e.target.value;
             const data = (searchKey === '') ? await getAllUsers() : await searchUser(searchKey);
             setUsers(data);
-        }), 3000);
+        }), 5000);
         return (() => clearTimeout(t));
-    }
+    }, [searchKey])
     return (
         <>
             <InputGroup className="my-3">
@@ -48,7 +48,7 @@ function AllUsers() {
                     placeholder="Enter username"
                     aria-label="Enter username"
                     aria-describedby="search input"
-                    onChange={searchHandler}
+                    onChange={(e) => setSearchKey(e.target.value)}
                 />
             </InputGroup>
             <Container className='justify-content-center'>

@@ -17,11 +17,9 @@ function TweetPage() {
 
     function fetchMore() {
         (async () => {
-            console.log('hello');
             const json = (id === null) ? await loadTweets(pageNumber) : await getAllTweetsOfUser(id, pageNumber);
             setListOfTweets([...listOfTweets, ...json]);
-            setPageNumber(() => pageNumber + 1)
-            console.log(json);
+            setPageNumber(() => pageNumber + 1);
             if (json.length === 0) setHasMore(false);
         })()
     }
@@ -69,8 +67,8 @@ function TweetPage() {
                     next={fetchMore}
                     hasMore={hasMore}
                     loader={
-                        <div class="spinner-border text-primary my-2" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                        <div className="spinner-border text-primary my-2" role="status">
+                            <span className="visually-hidden">Loading...</span>
                         </div>
                     }
                 >

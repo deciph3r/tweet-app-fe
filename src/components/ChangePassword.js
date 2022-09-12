@@ -16,7 +16,6 @@ function ChangePassword({ setIsLoggedIn }) {
             confirmPasswordRef.current.classList.remove('is-valid');
             confirmPasswordRef.current.classList.add('is-invalid');
         } else if (confirmPassword === password && isFormDirty) {
-            console.log("t");
             confirmPasswordRef.current.classList.remove('is-invalid');
             confirmPasswordRef.current.classList.add('is-valid');
         }
