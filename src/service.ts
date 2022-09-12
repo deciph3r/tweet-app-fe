@@ -12,7 +12,6 @@ export async function login(username: String, password: String) {
 }
 
 export async function loadTweets(page: Number = 0) {
-    console.log(page);
     const response = await fetch(BASE_URL + `/all?page=${page}`, {
         method: 'GET',
         headers: {
