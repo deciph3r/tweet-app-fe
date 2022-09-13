@@ -21,17 +21,23 @@ function App() {
 
   return (
     <div className="App">
-      <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-      <div className='container-fluid main'>
-        <Routes>
-          <Route path='/login' element={<Login setIsLoggedIn={setIsLoggedIn} />} />
-          <Route path='/register' element={<Register />} />
-          <Route path='/tweets' element={<TweetPage />} />
-          <Route path='/all-users' element={<AllUsers />} />
-          <Route path='/forgot' element={<ChangePassword setIsLoggedIn={setIsLoggedIn} />} />
-        </Routes>
+      <div style={{ paddingTop: '70px' }}>
+        <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       </div>
-    </div>
+      <div className='container pt-4'>
+        <div className='row justify-content-center'>
+          <div className='col-lg-6'>
+            <Routes>
+              <Route path='/login' element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+              <Route path='/register' element={<Register />} />
+              <Route path='/tweets' element={<TweetPage />} />
+              <Route path='/all-users' element={<AllUsers />} />
+              <Route path='/forgot' element={<ChangePassword setIsLoggedIn={setIsLoggedIn} />} />
+            </Routes>
+          </div>
+        </div>
+      </div>
+    </div >
   );
 }
 

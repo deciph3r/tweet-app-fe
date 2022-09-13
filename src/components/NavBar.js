@@ -25,7 +25,7 @@ function Navbar({ setIsLoggedIn, isLoggedIn }) {
     }
     return (
         <>
-            <BNavbar bg="primary" variant="dark">
+            <BNavbar fixed="top" bg="primary" variant="dark">
                 <Container>
                     <BNavbar.Brand>
                         <img
