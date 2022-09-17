@@ -1,7 +1,12 @@
-# Getting Started with Create React App
+# React Front-End for the Tweet App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Configuration
+
+### Backend Configuration
+
+Find the api url in server.ts file and update the base url accordingly. you can find my backend code on this repo [tweet-app-be](https://github.com/deciph3r/tweet-app-be)
 ## Available Scripts
 
 In the project directory, you can run:
